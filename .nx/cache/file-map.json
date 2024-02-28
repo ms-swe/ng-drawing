@@ -50,7 +50,7 @@
       },
       {
         "file": ".eslintrc.json",
-        "hash": "2183826507511335512"
+        "hash": "8124267143096867303"
       },
       {
         "file": ".gitignore",
@@ -63,6 +63,10 @@
       {
         "file": ".vscode/launch.json",
         "hash": "17406702432687230417"
+      },
+      {
+        "file": ".vscode/settings.json",
+        "hash": "11253681595574135220"
       },
       {
         "file": ".vscode/tasks.json",
@@ -78,35 +82,99 @@
       },
       {
         "file": "package-lock.json",
-        "hash": "8752426100652457389"
+        "hash": "12765948094067146678"
       },
       {
         "file": "package.json",
-        "hash": "8802790659523068214"
+        "hash": "2115018663335078220"
+      },
+      {
+        "file": "src/_theme.scss",
+        "hash": "10638315734001819221"
       },
       {
         "file": "src/app/app.component.html",
-        "hash": "10813319629526412136"
+        "hash": "4853046764258412644"
       },
       {
         "file": "src/app/app.component.scss",
-        "hash": "3244421341483603138"
+        "hash": "10723272352009597676"
       },
       {
         "file": "src/app/app.component.spec.ts",
-        "hash": "12253340992386744498"
+        "hash": "11998173252599158069"
       },
       {
         "file": "src/app/app.component.ts",
-        "hash": "17597000366928478028"
+        "hash": "6797393210074377827"
       },
       {
         "file": "src/app/app.config.ts",
-        "hash": "5548986198782384011"
+        "hash": "17569536376082735310"
       },
       {
         "file": "src/app/app.routes.ts",
-        "hash": "809736233805555256"
+        "hash": "878923877339505583"
+      },
+      {
+        "file": "src/app/editor/drawing-area/drawing-area.component.html",
+        "hash": "17295646066026086516"
+      },
+      {
+        "file": "src/app/editor/drawing-area/drawing-area.component.scss",
+        "hash": "5580982752340643529"
+      },
+      {
+        "file": "src/app/editor/drawing-area/drawing-area.component.spec.ts",
+        "hash": "11404587957488207803"
+      },
+      {
+        "file": "src/app/editor/drawing-area/drawing-area.component.ts",
+        "hash": "11916985521320205952"
+      },
+      {
+        "file": "src/app/editor/editor.routes.ts",
+        "hash": "12158021656066014622"
+      },
+      {
+        "file": "src/app/misc/misc-stuff/misc-stuff.component.html",
+        "hash": "17286619913942872163"
+      },
+      {
+        "file": "src/app/misc/misc-stuff/misc-stuff.component.scss",
+        "hash": "3244421341483603138"
+      },
+      {
+        "file": "src/app/misc/misc-stuff/misc-stuff.component.spec.ts",
+        "hash": "7137977638410943128"
+      },
+      {
+        "file": "src/app/misc/misc-stuff/misc-stuff.component.ts",
+        "hash": "4927125525306832406"
+      },
+      {
+        "file": "src/app/misc/misc.routes.ts",
+        "hash": "1842987102865575931"
+      },
+      {
+        "file": "src/app/virtual-world/constants.ts",
+        "hash": "4864106314233685164"
+      },
+      {
+        "file": "src/app/virtual-world/graphEditor.ts",
+        "hash": "186070205926194961"
+      },
+      {
+        "file": "src/app/virtual-world/math/graph.ts",
+        "hash": "11847230600737120695"
+      },
+      {
+        "file": "src/app/virtual-world/primitives/point.ts",
+        "hash": "15771608202574715953"
+      },
+      {
+        "file": "src/app/virtual-world/primitives/segment.ts",
+        "hash": "10838292416165507608"
       },
       {
         "file": "src/assets/.gitkeep",
@@ -118,15 +186,15 @@
       },
       {
         "file": "src/index.html",
-        "hash": "5875588816818322867"
+        "hash": "457900040721941344"
       },
       {
         "file": "src/main.ts",
-        "hash": "4169901790405087765"
+        "hash": "17052569609227678343"
       },
       {
         "file": "src/styles.scss",
-        "hash": "2917954890128038984"
+        "hash": "15915185699692601469"
       },
       {
         "file": "tsconfig.app.json",
