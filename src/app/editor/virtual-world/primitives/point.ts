@@ -1,3 +1,4 @@
+import * as EDC from '../../constants';
 import * as VWC from '../constants';
 
 export class Point {
@@ -20,6 +21,7 @@ export class Point {
       color = VWC.pointColor,
       selected = false,
       hovered = false,
+      zoom = 1,
     } = {},
   ): void {
     ctx.beginPath();
@@ -29,18 +31,18 @@ export class Point {
 
     if (selected) {
       ctx.beginPath();
-      ctx.lineWidth = VWC.selectionWidth;
-      ctx.strokeStyle = VWC.selectionStrokeStyle;
-      ctx.arc(this.x, this.y, radius + VWC.selectionDistance, 0, Math.PI * 2);
+      ctx.lineWidth = EDC.selectionWidth * zoom;
+      ctx.strokeStyle = EDC.selectionStrokeStyle;
+      ctx.arc(this.x, this.y, radius + EDC.selectionDistance, 0, Math.PI * 2);
       ctx.stroke();
     }
 
     if (hovered) {
       ctx.beginPath();
-      ctx.lineWidth = VWC.hoverWidth;
-      ctx.strokeStyle = VWC.hoverStrokeStyle;
-      ctx.setLineDash(VWC.hoverDash);
-      ctx.arc(this.x, this.y, radius + VWC.hoverDistance, 0, Math.PI * 2);
+      ctx.lineWidth = EDC.hoverWidth * zoom;
+      ctx.strokeStyle = EDC.hoverStrokeStyle;
+      ctx.setLineDash(EDC.hoverDash);
+      ctx.arc(this.x, this.y, radius + EDC.hoverDistance, 0, Math.PI * 2);
       ctx.stroke();
       ctx.setLineDash([]);
     }

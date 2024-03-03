@@ -118,11 +118,11 @@
       },
       {
         "file": "src/app/editor/drawing-area/drawing-area.component.html",
-        "hash": "17295646066026086516"
+        "hash": "13159889924414595566"
       },
       {
         "file": "src/app/editor/drawing-area/drawing-area.component.scss",
-        "hash": "5580982752340643529"
+        "hash": "2606507801567969970"
       },
       {
         "file": "src/app/editor/drawing-area/drawing-area.component.spec.ts",
@@ -130,11 +130,35 @@
       },
       {
         "file": "src/app/editor/drawing-area/drawing-area.component.ts",
-        "hash": "11916985521320205952"
+        "hash": "1167118084027783013"
       },
       {
         "file": "src/app/editor/editor.routes.ts",
         "hash": "12158021656066014622"
+      },
+      {
+        "file": "src/app/editor/virtual-world/constants.ts",
+        "hash": "17088536856022347132"
+      },
+      {
+        "file": "src/app/editor/virtual-world/graphEditor.ts",
+        "hash": "3181118110181964771"
+      },
+      {
+        "file": "src/app/editor/virtual-world/math/graph.ts",
+        "hash": "11847230600737120695"
+      },
+      {
+        "file": "src/app/editor/virtual-world/math/utils.ts",
+        "hash": "11590317315196008937"
+      },
+      {
+        "file": "src/app/editor/virtual-world/primitives/point.ts",
+        "hash": "14209128936971643700"
+      },
+      {
+        "file": "src/app/editor/virtual-world/primitives/segment.ts",
+        "hash": "10686400530428648903"
       },
       {
         "file": "src/app/misc/misc-stuff/misc-stuff.component.html",
@@ -155,26 +179,6 @@
       {
         "file": "src/app/misc/misc.routes.ts",
         "hash": "1842987102865575931"
-      },
-      {
-        "file": "src/app/virtual-world/constants.ts",
-        "hash": "4864106314233685164"
-      },
-      {
-        "file": "src/app/virtual-world/graphEditor.ts",
-        "hash": "186070205926194961"
-      },
-      {
-        "file": "src/app/virtual-world/math/graph.ts",
-        "hash": "11847230600737120695"
-      },
-      {
-        "file": "src/app/virtual-world/primitives/point.ts",
-        "hash": "15771608202574715953"
-      },
-      {
-        "file": "src/app/virtual-world/primitives/segment.ts",
-        "hash": "10838292416165507608"
       },
       {
         "file": "src/assets/.gitkeep",

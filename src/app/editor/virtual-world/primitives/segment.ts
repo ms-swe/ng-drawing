@@ -1,4 +1,5 @@
 import { Point } from './point';
+import * as EDC from '../../constants';
 import * as VWC from '../constants';
 
 export class Segment {
@@ -29,8 +30,8 @@ export class Segment {
     ctx.beginPath();
     ctx.lineWidth = lineWidth;
     if (preview) {
-      ctx.strokeStyle = VWC.previewColor;
-      ctx.setLineDash(VWC.previewDash);
+      ctx.strokeStyle = EDC.previewColor;
+      ctx.setLineDash(EDC.previewDash);
     } else {
       ctx.strokeStyle = lineColor;
     }

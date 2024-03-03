@@ -15,10 +15,11 @@ import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatIconModule } from '@angular/material/icon';
-import { Graph } from '../../virtual-world/math/graph';
-import * as VWC from '../../virtual-world/constants';
-import { GraphEditor } from '../../virtual-world/graphEditor';
+import { Graph } from '../virtual-world/math/graph';
+import * as EDC from '../constants';
+import { GraphEditor } from '../virtual-world/graphEditor';
 import { Router } from '@angular/router';
+import { Viewport } from '../viewport';
 
 @Component({
   selector: 'ngdr-drawing-area',
@@ -30,6 +31,7 @@ import { Router } from '@angular/router';
 export class DrawingAreaComponent implements OnInit, OnDestroy, AfterViewInit {
   @ViewChild('mainCanvas', { static: true })
   mainCanvasElemRef!: ElementRef<HTMLCanvasElement>;
+
   @ViewChild('uiCanvas', { static: true })
   uiCanvasElemRef!: ElementRef<HTMLCanvasElement>;
 
@@ -41,12 +43,14 @@ export class DrawingAreaComponent implements OnInit, OnDestroy, AfterViewInit {
   mainCtx!: CanvasRenderingContext2D;
   uiCtx!: CanvasRenderingContext2D;
 
+  viewport?: Viewport;
+
   canvasWidth = signal(400);
   canvasHeight = signal(300);
 
-  canvasBackgroundColor = VWC.canvasBackgroundColor;
-  graph: Graph | undefined;
-  graphEditor: GraphEditor | undefined;
+  canvasBackgroundColor = EDC.canvasBackgroundColor;
+  graph?: Graph;
+  graphEditor?: GraphEditor;
 
   eventUnlisteners: (() => void)[] = [];
 
@@ -65,12 +69,24 @@ export class DrawingAreaComponent implements OnInit, OnDestroy, AfterViewInit {
     const uiCanvas = this.uiCanvasElemRef.nativeElement;
     this.uiCtx = uiCanvas.getContext('2d')!;
 
+    this.viewport = new Viewport(
+      mainCanvas,
+      uiCanvas,
+      this.ngZone,
+      this.renderer2,
+    );
+
     this.graph = new Graph();
-    this.graphEditor = new GraphEditor(this.graph, mainCanvas, uiCanvas);
+    this.graphEditor = new GraphEditor(
+      this.graph,
+      this.viewport,
+      this.ngZone,
+      this.renderer2,
+    );
 
     this.onResize();
 
-    this.draw();
+    this.animate();
   }
 
   @HostListener('window:resize', ['$event'])
@@ -79,49 +95,16 @@ export class DrawingAreaComponent implements OnInit, OnDestroy, AfterViewInit {
     this.canvasHeight.set(window.innerHeight - 160);
   }
 
-  draw() {
-    [this.mainCtx, this.uiCtx].forEach((ctx) =>
-      ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height),
-    );
+  animate() {
+    this.viewport!.reset();
     this.graphEditor?.draw();
-
     this.ngZone.runOutsideAngular(() => {
-      window.requestAnimationFrame(() => this.draw());
+      window.requestAnimationFrame(() => this.animate());
     });
   }
 
   private addEventListeners() {
     this.ngZone.runOutsideAngular(() => {
-      this.eventUnlisteners.push(
-        this.renderer2.listen(
-          this.uiCanvasElemRef.nativeElement,
-          'mousemove',
-          (ev) => {
-            this.onUiMouseMove(ev);
-          },
-        ),
-      );
-
-      this.eventUnlisteners.push(
-        this.renderer2.listen(
-          this.uiCanvasElemRef.nativeElement,
-          'mousedown',
-          (ev) => {
-            this.onUiMouseDown(ev);
-          },
-        ),
-      );
-
-      this.eventUnlisteners.push(
-        this.renderer2.listen(
-          this.uiCanvasElemRef.nativeElement,
-          'mouseup',
-          () => {
-            this.onUiMouseUp();
-          },
-        ),
-      );
-
       this.eventUnlisteners.push(
         this.renderer2.listen(
           this.uiCanvasElemRef.nativeElement,
@@ -136,18 +119,8 @@ export class DrawingAreaComponent implements OnInit, OnDestroy, AfterViewInit {
 
   private deleteEventListeners() {
     this.eventUnlisteners.forEach((func) => func());
-  }
-
-  onUiMouseMove(ev: MouseEvent) {
-    this.graphEditor?.onMouseMove(ev);
-  }
-
-  onUiMouseDown(ev: MouseEvent) {
-    this.graphEditor?.onMouseDown(ev);
-  }
-
-  onUiMouseUp() {
-    this.graphEditor?.onMouseUp();
+    this.graphEditor?.deleteEventListeners();
+    this.viewport?.deleteEventListeners();
   }
 
   test() {}
