@@ -74,6 +74,8 @@ export class DrawingAreaComponent implements OnInit, OnDestroy, AfterViewInit {
       this.renderer2,
     );
 
+    this.load();
+
     this.ngZone.runOutsideAngular(() => {
       this.animate();
     });
@@ -112,6 +114,18 @@ export class DrawingAreaComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   test() {}
+
+  dispose() {
+    this.graphEditor?.dispose();
+  }
+
+  save() {
+    this.graphEditor?.save();
+  }
+
+  load() {
+    this.graphEditor?.load();
+  }
 
   now(): Date {
     return new Date();

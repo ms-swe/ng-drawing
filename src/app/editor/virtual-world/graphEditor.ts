@@ -5,6 +5,7 @@ import * as EDC from '../constants';
 import { Segment } from './primitives/segment';
 import { NgZone, Renderer2 } from '@angular/core';
 import { Viewport } from '../viewport';
+import { localStorageKeyGraph } from './constants';
 
 export class GraphEditor {
   graph: Graph;
@@ -98,6 +99,53 @@ export class GraphEditor {
 
   onMouseUp() {
     this.dragging = false;
+  }
+
+  save() {
+    if (this.graph.points.length == 0 && this.graph.segments.length == 0) {
+      localStorage.removeItem(localStorageKeyGraph);
+      return;
+    }
+    localStorage.setItem(localStorageKeyGraph, JSON.stringify(this.graph));
+  }
+
+  load() {
+    try {
+      const storedValue = localStorage.getItem(localStorageKeyGraph);
+      if (!storedValue) {
+        console.log('No graph stored locally');
+        return;
+      }
+
+      const parsedValue = JSON.parse(storedValue);
+
+      const points: Point[] = parsedValue.points.map(
+        (p: Point) => new Point(p.x, p.y),
+      );
+
+      const segments: Segment[] = [];
+      parsedValue.segments.forEach((s: Segment) => {
+        const p1 = points.find((p) => p.equals(s.p1));
+        const p2 = points.find((p) => p.equals(s.p2));
+        if (p1 && p2) {
+          segments.push(new Segment(p1, p2));
+        }
+      });
+
+      this.graph.points = points;
+      this.graph.segments = segments;
+
+      console.log('Locally stored graph loaded');
+    } catch (error) {
+      console.log('Error loading graph from LocalStorage:', error);
+      return;
+    }
+  }
+
+  dispose() {
+    this.graph.dispose();
+    this.selected = undefined;
+    this.hovered = undefined;
   }
 
   draw() {
