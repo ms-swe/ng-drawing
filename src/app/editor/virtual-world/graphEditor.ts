@@ -11,10 +11,8 @@ export class GraphEditor {
 
   viewport: Viewport;
 
-  mainCanvas: HTMLCanvasElement;
-  mainCtx: CanvasRenderingContext2D;
-  uiCanvas: HTMLCanvasElement;
-  uiCtx: CanvasRenderingContext2D;
+  canvas: HTMLCanvasElement;
+  ctx: CanvasRenderingContext2D;
 
   mousePos?: Point;
   selected?: Point;
@@ -33,11 +31,8 @@ export class GraphEditor {
 
     this.viewport = viewport;
 
-    this.mainCanvas = viewport.mainCanvas;
-    this.mainCtx = this.mainCanvas.getContext('2d')!;
-
-    this.uiCanvas = viewport.uiCanvas;
-    this.uiCtx = this.uiCanvas.getContext('2d')!;
+    this.canvas = viewport.canvas;
+    this.ctx = this.canvas.getContext('2d')!;
 
     this.addEventListeners(ngZone, renderer2);
   }
@@ -45,19 +40,19 @@ export class GraphEditor {
   private addEventListeners(ngZone: NgZone, renderer2: Renderer2) {
     ngZone.runOutsideAngular(() => {
       this.eventUnlisteners.push(
-        renderer2.listen(this.uiCanvas, 'mousemove', (ev) => {
+        renderer2.listen(this.canvas, 'mousemove', (ev) => {
           this.onMouseMove(ev);
         }),
       );
 
       this.eventUnlisteners.push(
-        renderer2.listen(this.uiCanvas, 'mousedown', (ev) => {
+        renderer2.listen(this.canvas, 'mousedown', (ev) => {
           this.onMouseDown(ev);
         }),
       );
 
       this.eventUnlisteners.push(
-        renderer2.listen(this.uiCanvas, 'mouseup', () => {
+        renderer2.listen(this.canvas, 'mouseup', () => {
           this.onMouseUp();
         }),
       );
@@ -106,16 +101,16 @@ export class GraphEditor {
   }
 
   draw() {
-    this.graph.draw(this.mainCtx);
+    this.graph.draw(this.ctx);
 
-    this.hovered?.draw(this.uiCtx, { hovered: true, zoom: this.viewport.zoom });
+    this.hovered?.draw(this.ctx, { hovered: true, zoom: this.viewport.zoom });
 
     if (this.selected) {
       new Segment(this.selected, this.hovered ?? this.mousePos!).draw(
-        this.uiCtx,
+        this.ctx,
         { preview: true },
       );
-      this.selected?.draw(this.uiCtx, {
+      this.selected?.draw(this.ctx, {
         selected: true,
         zoom: this.viewport.zoom,
       });

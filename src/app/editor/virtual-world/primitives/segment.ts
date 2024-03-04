@@ -40,4 +40,8 @@ export class Segment {
     ctx.stroke();
     ctx.setLineDash([]);
   }
+
+  toString(): string {
+    return this.p1 + '->' + this.p2;
+  }
 }

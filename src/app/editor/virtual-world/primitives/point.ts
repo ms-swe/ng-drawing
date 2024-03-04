@@ -47,4 +47,8 @@ export class Point {
       ctx.setLineDash([]);
     }
   }
+
+  toString(): string {
+    return `(${this.x},${this.y})`;
+  }
 }

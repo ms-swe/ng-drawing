@@ -11,14 +11,11 @@ type DragInfo = {
 };
 
 export class Viewport {
-  mainCanvas: HTMLCanvasElement;
-  uiCanvas: HTMLCanvasElement;
-
-  mainCtx: CanvasRenderingContext2D;
-  uiCtx: CanvasRenderingContext2D;
+  canvas: HTMLCanvasElement;
+  ctx: CanvasRenderingContext2D;
 
   zoom = 1;
-  center: Point;
+  mousePosRaw = new Point(0, 0);
   offset: Point;
   drag: DragInfo = {
     start: new Point(0, 0),
@@ -29,43 +26,27 @@ export class Viewport {
 
   eventUnlisteners: (() => void)[] = [];
 
-  constructor(
-    mainCanvas: HTMLCanvasElement,
-    uiCanvas: HTMLCanvasElement,
-    ngZone: NgZone,
-    renderer2: Renderer2,
-  ) {
-    this.mainCanvas = mainCanvas;
-    this.uiCanvas = uiCanvas;
-
-    this.mainCtx = mainCanvas.getContext('2d')!;
-    this.uiCtx = uiCanvas.getContext('2d')!;
-
-    this.center = new Point(
-      this.mainCanvas.width / 2,
-      this.mainCanvas.height / 2,
-    );
-    this.offset = scale(this.center, -1);
+  constructor(canvas: HTMLCanvasElement, ngZone: NgZone, renderer2: Renderer2) {
+    this.canvas = canvas;
+    this.ctx = canvas.getContext('2d')!;
+    this.offset = new Point(0, 0);
 
     this.addEventListeners(ngZone, renderer2);
   }
 
   reset() {
-    [this.mainCtx, this.uiCtx].forEach((ctx) => {
-      ctx.restore();
-      ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-      ctx.save();
-      ctx.translate(this.center.x, this.center.y);
-      ctx.scale(1 / this.zoom, 1 / this.zoom);
-      const offset = this.getOffset();
-      ctx.translate(offset.x, offset.y);
-    });
+    this.ctx.restore();
+    this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
+    this.ctx.save();
+    this.ctx.scale(1 / this.zoom, 1 / this.zoom);
+    const offset = this.getOffset();
+    this.ctx.translate(offset.x, offset.y);
   }
 
   getMouse(ev: MouseEvent, subtractDragOffset: boolean = false): Point {
     const p = new Point(
-      (ev.offsetX - this.center.x) * this.zoom - this.offset.x,
-      (ev.offsetY - this.center.y) * this.zoom - this.offset.y,
+      ev.offsetX * this.zoom - this.offset.x,
+      ev.offsetY * this.zoom - this.offset.y,
     );
     return subtractDragOffset ? subtract(p, this.drag.offset) : p;
   }
@@ -77,22 +58,22 @@ export class Viewport {
   private addEventListeners(ngZone: NgZone, renderer2: Renderer2) {
     ngZone.runOutsideAngular(() => {
       this.eventUnlisteners.push(
-        renderer2.listen(this.uiCanvas, 'mousewheel', (ev) => {
+        renderer2.listen(this.canvas, 'mousewheel', (ev) => {
           this.onMouseWheel(ev);
         }),
       );
       this.eventUnlisteners.push(
-        renderer2.listen(this.uiCanvas, 'mousedown', (ev) => {
+        renderer2.listen(this.canvas, 'mousedown', (ev) => {
           this.onMouseDown(ev);
         }),
       );
       this.eventUnlisteners.push(
-        renderer2.listen(this.uiCanvas, 'mousemove', (ev) => {
+        renderer2.listen(this.canvas, 'mousemove', (ev) => {
           this.onMouseMove(ev);
         }),
       );
       this.eventUnlisteners.push(
-        renderer2.listen(this.uiCanvas, 'mouseup', () => {
+        renderer2.listen(this.canvas, 'mouseup', () => {
           this.onMouseUp();
         }),
       );
@@ -105,8 +86,16 @@ export class Viewport {
 
   onMouseWheel(ev: WheelEvent) {
     const dir = Math.sign(ev.deltaY);
-    this.zoom += dir * EDC.zoomStep;
-    this.zoom = Math.max(EDC.zoomMin, Math.min(EDC.zoomMax, this.zoom));
+    let newZoom = this.zoom + dir * EDC.zoomStep;
+    newZoom = Math.max(EDC.zoomMin, Math.min(EDC.zoomMax, newZoom));
+
+    // adjust offset so that the mouse pointer remains on the same part of the canvas' content as before scrolling
+    this.offset = add(
+      this.offset,
+      scale(this.mousePosRaw, newZoom - this.zoom),
+    );
+
+    this.zoom = newZoom;
   }
 
   onMouseDown(ev: MouseEvent) {
@@ -117,6 +106,8 @@ export class Viewport {
   }
 
   onMouseMove(ev: MouseEvent) {
+    this.mousePosRaw = new Point(ev.offsetX, ev.offsetY);
+
     if (this.drag.active) {
       this.drag.end = this.getMouse(ev);
       this.drag.offset = subtract(this.drag.end, this.drag.start);

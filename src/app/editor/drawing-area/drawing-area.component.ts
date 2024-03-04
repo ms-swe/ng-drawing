@@ -29,19 +29,15 @@ import { Viewport } from '../viewport';
   styleUrl: './drawing-area.component.scss',
 })
 export class DrawingAreaComponent implements OnInit, OnDestroy, AfterViewInit {
-  @ViewChild('mainCanvas', { static: true })
-  mainCanvasElemRef!: ElementRef<HTMLCanvasElement>;
-
-  @ViewChild('uiCanvas', { static: true })
-  uiCanvasElemRef!: ElementRef<HTMLCanvasElement>;
+  @ViewChild('canvas', { static: true })
+  canvasElemRef!: ElementRef<HTMLCanvasElement>;
 
   elementRef = inject(ElementRef);
   ngZone = inject(NgZone);
   renderer2 = inject(Renderer2);
   router = inject(Router);
 
-  mainCtx!: CanvasRenderingContext2D;
-  uiCtx!: CanvasRenderingContext2D;
+  ctx!: CanvasRenderingContext2D;
 
   viewport?: Viewport;
 
@@ -63,18 +59,12 @@ export class DrawingAreaComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    const mainCanvas = this.mainCanvasElemRef.nativeElement;
-    this.mainCtx = mainCanvas.getContext('2d')!;
+    this.onResize();
 
-    const uiCanvas = this.uiCanvasElemRef.nativeElement;
-    this.uiCtx = uiCanvas.getContext('2d')!;
+    const canvas = this.canvasElemRef.nativeElement;
+    this.ctx = canvas.getContext('2d')!;
 
-    this.viewport = new Viewport(
-      mainCanvas,
-      uiCanvas,
-      this.ngZone,
-      this.renderer2,
-    );
+    this.viewport = new Viewport(canvas, this.ngZone, this.renderer2);
 
     this.graph = new Graph();
     this.graphEditor = new GraphEditor(
@@ -84,9 +74,9 @@ export class DrawingAreaComponent implements OnInit, OnDestroy, AfterViewInit {
       this.renderer2,
     );
 
-    this.onResize();
-
-    this.animate();
+    this.ngZone.runOutsideAngular(() => {
+      this.animate();
+    });
   }
 
   @HostListener('window:resize', ['$event'])
@@ -98,16 +88,14 @@ export class DrawingAreaComponent implements OnInit, OnDestroy, AfterViewInit {
   animate() {
     this.viewport!.reset();
     this.graphEditor?.draw();
-    this.ngZone.runOutsideAngular(() => {
-      window.requestAnimationFrame(() => this.animate());
-    });
+    window.requestAnimationFrame(() => this.animate());
   }
 
   private addEventListeners() {
     this.ngZone.runOutsideAngular(() => {
       this.eventUnlisteners.push(
         this.renderer2.listen(
-          this.uiCanvasElemRef.nativeElement,
+          this.canvasElemRef.nativeElement,
           'contextmenu',
           (ev) => {
             ev.preventDefault();

@@ -12,21 +12,12 @@
   [style.height]="canvasHeight() + 10 + 'px'"
 >
   <canvas
-    #uiCanvas
-    id="uiCanvas"
-    class="ui-canvas"
-    [attr.width]="canvasWidth()"
-    [attr.height]="canvasHeight()"
-    >UI Canvas</canvas
-  >
-
-  <canvas
-    #mainCanvas
-    id="mainCanvas"
-    class="main-canvas"
+    #canvas
+    id="canvas"
+    class="canvas"
     [attr.width]="canvasWidth()"
     [attr.height]="canvasHeight()"
     [style.background-color]="canvasBackgroundColor"
-    >Main Canvas</canvas
+    >Canvas</canvas
   >
 </div>
