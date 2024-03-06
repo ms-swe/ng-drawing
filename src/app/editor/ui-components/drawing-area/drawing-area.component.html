@@ -1,0 +1,41 @@
+<div #innerComponent>
+  <mat-toolbar class="toolbar">
+    <button mat-icon-button (click)="save()">
+      <mat-icon>save</mat-icon>
+    </button>
+    <button mat-icon-button (click)="dispose()">
+      <mat-icon>delete_forever</mat-icon>
+    </button>
+    <button mat-icon-button (click)="test()">
+      <mat-icon>brush</mat-icon>
+    </button>
+
+    <section class="zoom-section">
+      <button class="zoom-item" mat-icon-button (click)="zoomIn()">
+        <mat-icon>zoom_in</mat-icon>
+      </button>
+      <button class="zoom-item" mat-icon-button (click)="zoomOut()">
+        <mat-icon>zoom_out</mat-icon>
+      </button>
+      <mat-label class="zoom-item">{{ zoom() | number: "1.2-2" }}</mat-label>
+    </section>
+    <p class="last-rendering">
+      Last Rendering: {{ now() | date: "HH:mm:ss:SSS" }}
+    </p>
+  </mat-toolbar>
+  <div
+    id="canvasFrame"
+    [style.width]="canvasWidth() + 10 + 'px'"
+    [style.height]="canvasHeight() + 10 + 'px'"
+  >
+    <canvas
+      #canvas
+      id="canvas"
+      class="canvas"
+      [attr.width]="canvasWidth()"
+      [attr.height]="canvasHeight()"
+      [style.background-color]="canvasBackgroundColor()"
+      >Canvas</canvas
+    >
+  </div>
+</div>

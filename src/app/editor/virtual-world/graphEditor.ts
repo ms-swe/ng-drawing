@@ -1,11 +1,12 @@
 import { Graph } from './math/graph';
 import { getNearestPoint } from './math/utils';
 import { Point } from './primitives/point';
-import * as EDC from '../constants';
+import * as EDC from '../data/constants';
 import { Segment } from './primitives/segment';
 import { NgZone, Renderer2 } from '@angular/core';
 import { Viewport } from '../viewport';
 import { localStorageKeyGraph } from './constants';
+import { SettingsService } from '../data/settings.service';
 
 export class GraphEditor {
   graph: Graph;
@@ -20,17 +21,22 @@ export class GraphEditor {
   hovered?: Point;
   dragging = false;
 
+  settingsService: SettingsService;
+
   eventUnlisteners: (() => void)[] = [];
 
   constructor(
     graph: Graph,
     viewport: Viewport,
+    settingsService: SettingsService,
     ngZone: NgZone,
     renderer2: Renderer2,
   ) {
     this.graph = graph;
 
     this.viewport = viewport;
+
+    this.settingsService = settingsService;
 
     this.canvas = viewport.canvas;
     this.ctx = this.canvas.getContext('2d')!;
@@ -69,7 +75,7 @@ export class GraphEditor {
     this.hovered = getNearestPoint(
       this.mousePos,
       this.graph.points,
-      EDC.hoverThreshold * this.viewport.zoom,
+      this.settingsService.hoverThreshold() * this.viewport.zoom,
     );
     if (this.dragging && this.selected) {
       this.selected.x = this.mousePos.x;
@@ -151,17 +157,40 @@ export class GraphEditor {
   draw() {
     this.graph.draw(this.ctx);
 
-    this.hovered?.draw(this.ctx, { hovered: true, zoom: this.viewport.zoom });
+    this.hovered?.draw(
+      this.ctx,
+      false,
+      {
+        hoverWidth: this.settingsService.hoverWidth(),
+        hoverDistance: this.settingsService.hoverDistance(),
+        hoverStrokeStyle: this.settingsService.hoverStrokeStyle(),
+        hoverDash: this.settingsService.hoverDash(),
+      },
+      {
+        zoom: this.viewport.zoom,
+      },
+    );
 
     if (this.selected) {
       new Segment(this.selected, this.hovered ?? this.mousePos!).draw(
         this.ctx,
-        { preview: true },
+        {
+          previewColor: this.settingsService.previewColor(),
+          previewDash: this.settingsService.previewDash(),
+        },
       );
-      this.selected?.draw(this.ctx, {
-        selected: true,
-        zoom: this.viewport.zoom,
-      });
+      this.selected?.draw(
+        this.ctx,
+        {
+          selectionWidth: this.settingsService.selectionWidth(),
+          selectionDistance: this.settingsService.selectionDistance(),
+          selectionStrokeStyle: this.settingsService.selectionStrokeStyle(),
+        },
+        false,
+        {
+          zoom: this.viewport.zoom,
+        },
+      );
     }
   }
 

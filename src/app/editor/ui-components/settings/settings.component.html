@@ -1,0 +1,178 @@
+<fieldset>
+  <legend>Canvas</legend>
+
+  <div class="setting-field">
+    <mat-label class="setting-label" for="canvasBackgroundColor"
+      >Background Color</mat-label
+    >
+    <input
+      class="setting-input"
+      matInput
+      id="canvasBackgroundColor"
+      type="color"
+      (input)="canvasBackgroundColor.set($any($event.target).value)"
+      [value]="canvasBackgroundColor()"
+    />
+  </div>
+</fieldset>
+
+<fieldset>
+  <legend>Zoom</legend>
+
+  <div class="setting-field">
+    <mat-label class="setting-label" for="zoomStep">Step</mat-label>
+    <mat-slider min="0.01" max="0.5" step="0.01" showTickMarks discrete>
+      <input
+        class="setting-input"
+        id="zoomStep"
+        matSliderThumb
+        (input)="zoomStep.set($any($event.target).value)"
+        [value]="zoomStep()"
+      />
+    </mat-slider>
+  </div>
+
+  <div class="setting-field">
+    <mat-label class="setting-label" for="zoomMin">Min</mat-label>
+    <mat-slider min="0.01" max="1" step="0.01" showTickMarks discrete>
+      <input
+        class="setting-input"
+        id="zoomMin"
+        matSliderThumb
+        (input)="zoomMin.set($any($event.target).value)"
+        [value]="zoomMin()"
+      />
+    </mat-slider>
+  </div>
+
+  <div class="setting-field">
+    <mat-label class="setting-label" for="zoomMax">Max</mat-label>
+    <mat-slider min="1" max="100" step="1" showTickMarks discrete>
+      <input
+        class="setting-input"
+        id="zoomMax"
+        matSliderThumb
+        (input)="zoomMax.set($any($event.target).value)"
+        [value]="zoomMax()"
+      />
+    </mat-slider>
+  </div>
+</fieldset>
+
+<fieldset>
+  <legend>Selection</legend>
+
+  <div class="setting-field">
+    <mat-label class="setting-label" for="selectionWidth">Width</mat-label>
+    <mat-slider min="1" max="5" step="1" showTickMarks discrete>
+      <input
+        class="setting-input"
+        id="selectionWidth"
+        matSliderThumb
+        (input)="selectionWidth.set($any($event.target).value)"
+        [value]="selectionWidth()"
+      />
+    </mat-slider>
+  </div>
+
+  <div class="setting-field">
+    <mat-label class="setting-label" for="selectionStrokeStyle"
+      >Stroke Style</mat-label
+    >
+    <input
+      class="setting-input"
+      matInput
+      id="selectionStrokeStyle"
+      type="color"
+      (input)="selectionStrokeStyle.set($any($event.target).value)"
+      [value]="selectionStrokeStyle()"
+    />
+  </div>
+
+  <div class="setting-field">
+    <mat-label class="setting-label" for="selectionDistance"
+      >Distance</mat-label
+    >
+    <mat-slider min="1" max="5" step="1" showTickMarks discrete>
+      <input
+        class="setting-input"
+        id="selectionDistance"
+        matSliderThumb
+        (input)="selectionDistance.set($any($event.target).value)"
+        [value]="selectionDistance()"
+      />
+    </mat-slider>
+  </div>
+</fieldset>
+
+<fieldset>
+  <legend>Hover</legend>
+
+  <div class="setting-field">
+    <mat-label class="setting-label" for="hoverThreshold">Threshold</mat-label>
+    <mat-slider min="1" max="20" step="1" showTickMarks discrete>
+      <input
+        class="setting-input"
+        id="hoverThreshold"
+        matSliderThumb
+        (input)="hoverThreshold.set($any($event.target).value)"
+        [value]="hoverThreshold()"
+      />
+    </mat-slider>
+  </div>
+
+  <div class="setting-field">
+    <mat-label class="setting-label" for="hoverWidth">Width</mat-label>
+    <mat-slider min="1" max="5" step="1" showTickMarks discrete>
+      <input
+        class="setting-input"
+        id="hoverWidth"
+        matSliderThumb
+        (input)="hoverWidth.set($any($event.target).value)"
+        [value]="hoverWidth()"
+      />
+    </mat-slider>
+  </div>
+
+  <div class="setting-field">
+    <mat-label class="setting-label" for="hoverStrokeStyle"
+      >Stroke Style</mat-label
+    >
+    <input
+      class="setting-input"
+      matInput
+      id="hoverStrokeStyle"
+      type="color"
+      (input)="hoverStrokeStyle.set($any($event.target).value)"
+      [value]="hoverStrokeStyle()"
+    />
+  </div>
+
+  <div class="setting-field">
+    <mat-label class="setting-label" for="hoverDistance">Distance</mat-label>
+    <mat-slider min="1" max="10" step="1" showTickMarks discrete>
+      <input
+        class="setting-input"
+        id="hoverDistance"
+        matSliderThumb
+        (input)="hoverDistance.set($any($event.target).value)"
+        [value]="hoverDistance()"
+      />
+    </mat-slider>
+  </div>
+</fieldset>
+
+<fieldset>
+  <legend>Preview</legend>
+  <div class="setting-field">
+    <mat-label class="setting-label" for="previewColor">Color</mat-label>
+    <input
+      class="setting-input"
+      matInput
+      id="previewColor"
+      type="color"
+      (input)="previewColor.set($any($event.target).value)"
+      [value]="previewColor()"
+    />
+  </div>
+</fieldset>

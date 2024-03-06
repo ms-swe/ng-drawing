@@ -1,7 +1,8 @@
 import { NgZone, Renderer2 } from '@angular/core';
-import * as EDC from './constants';
+import * as EDC from './data/constants';
 import { Point } from './virtual-world/primitives/point';
 import { add, scale, subtract } from './virtual-world/math/utils';
+import { SettingsService } from './data/settings.service';
 
 type DragInfo = {
   start: Point;
@@ -13,6 +14,8 @@ type DragInfo = {
 export class Viewport {
   canvas: HTMLCanvasElement;
   ctx: CanvasRenderingContext2D;
+
+  settingsService: SettingsService;
 
   zoom = 1;
   mousePosRaw = new Point(0, 0);
@@ -26,8 +29,14 @@ export class Viewport {
 
   eventUnlisteners: (() => void)[] = [];
 
-  constructor(canvas: HTMLCanvasElement, ngZone: NgZone, renderer2: Renderer2) {
+  constructor(
+    canvas: HTMLCanvasElement,
+    settingsService: SettingsService,
+    ngZone: NgZone,
+    renderer2: Renderer2,
+  ) {
     this.canvas = canvas;
+    this.settingsService = settingsService;
     this.ctx = canvas.getContext('2d')!;
     this.offset = new Point(0, 0);
 
@@ -85,17 +94,7 @@ export class Viewport {
   }
 
   onMouseWheel(ev: WheelEvent) {
-    const dir = Math.sign(ev.deltaY);
-    let newZoom = this.zoom + dir * EDC.zoomStep;
-    newZoom = Math.max(EDC.zoomMin, Math.min(EDC.zoomMax, newZoom));
-
-    // adjust offset so that the mouse pointer remains on the same part of the canvas' content as before scrolling
-    this.offset = add(
-      this.offset,
-      scale(this.mousePosRaw, newZoom - this.zoom),
-    );
-
-    this.zoom = newZoom;
+    this.changeZoom(Math.sign(ev.deltaY), true);
   }
 
   onMouseDown(ev: MouseEvent) {
@@ -124,5 +123,32 @@ export class Viewport {
         active: false,
       };
     }
+  }
+
+  changeZoom(direction: number, considerMousePos: boolean) {
+    let newZoom = this.zoom + direction * this.settingsService.zoomStep();
+    newZoom = Math.max(
+      this.settingsService.zoomMin(),
+      Math.min(this.settingsService.zoomMax(), newZoom),
+    );
+
+    if (considerMousePos) {
+      // adjust offset so that the mouse pointer remains on the same part of the canvas' content as before scrolling
+      this.offset = add(
+        this.offset,
+        scale(this.mousePosRaw, newZoom - this.zoom),
+      );
+    } else {
+      // use canvas center instead
+      this.offset = add(
+        this.offset,
+        scale(
+          new Point(this.canvas.width / 2, this.canvas.height / 2),
+          newZoom - this.zoom,
+        ),
+      );
+    }
+
+    this.zoom = newZoom;
   }
 }

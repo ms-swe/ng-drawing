@@ -58,7 +58,7 @@ export class Graph {
   }
 
   draw(ctx: CanvasRenderingContext2D) {
-    this.segments.forEach((s) => s.draw(ctx));
-    this.points.forEach((p) => p.draw(ctx));
+    this.segments.forEach((s) => s.draw(ctx, false));
+    this.points.forEach((p) => p.draw(ctx, false, false));
   }
 }

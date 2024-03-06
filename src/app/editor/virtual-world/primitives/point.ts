@@ -1,4 +1,3 @@
-import * as EDC from '../../constants';
 import * as VWC from '../constants';
 
 export class Point {
@@ -16,13 +15,22 @@ export class Point {
 
   draw(
     ctx: CanvasRenderingContext2D,
-    {
-      radius = VWC.pointRadius,
-      color = VWC.pointColor,
-      selected = false,
-      hovered = false,
-      zoom = 1,
-    } = {},
+    selected:
+      | false
+      | {
+          selectionWidth: number;
+          selectionDistance: number;
+          selectionStrokeStyle: string;
+        },
+    hovered:
+      | false
+      | {
+          hoverWidth: number;
+          hoverDistance: number;
+          hoverStrokeStyle: string;
+          hoverDash: number[];
+        },
+    { radius = VWC.pointRadius, color = VWC.pointColor, zoom = 1 } = {},
   ): void {
     ctx.beginPath();
     ctx.fillStyle = color;
@@ -31,18 +39,26 @@ export class Point {
 
     if (selected) {
       ctx.beginPath();
-      ctx.lineWidth = EDC.selectionWidth * zoom;
-      ctx.strokeStyle = EDC.selectionStrokeStyle;
-      ctx.arc(this.x, this.y, radius + EDC.selectionDistance, 0, Math.PI * 2);
+      ctx.lineWidth = selected.selectionWidth * zoom;
+      ctx.strokeStyle = selected.selectionStrokeStyle;
+      ctx.arc(
+        this.x,
+        this.y,
+        radius + selected.selectionDistance,
+        0,
+        Math.PI * 2,
+      );
+      console.log(radius + '/' + selected.selectionDistance); //TODO selectionDistance ist richtig, aber Kreis viel zu groß nach erstmaliger Änderung
+
       ctx.stroke();
     }
 
     if (hovered) {
       ctx.beginPath();
-      ctx.lineWidth = EDC.hoverWidth * zoom;
-      ctx.strokeStyle = EDC.hoverStrokeStyle;
-      ctx.setLineDash(EDC.hoverDash);
-      ctx.arc(this.x, this.y, radius + EDC.hoverDistance, 0, Math.PI * 2);
+      ctx.lineWidth = hovered.hoverWidth * zoom;
+      ctx.strokeStyle = hovered.hoverStrokeStyle;
+      ctx.setLineDash(hovered.hoverDash);
+      ctx.arc(this.x, this.y, radius + hovered.hoverDistance, 0, Math.PI * 2); //TODO wie oben
       ctx.stroke();
       ctx.setLineDash([]);
     }

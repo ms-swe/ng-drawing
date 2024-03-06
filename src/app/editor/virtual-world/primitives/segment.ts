@@ -1,5 +1,4 @@
 import { Point } from './point';
-import * as EDC from '../../constants';
 import * as VWC from '../constants';
 
 export class Segment {
@@ -21,17 +20,14 @@ export class Segment {
 
   draw(
     ctx: CanvasRenderingContext2D,
-    {
-      lineWidth = VWC.segmentLineWidth,
-      lineColor = VWC.segmentColor,
-      preview = false,
-    } = {},
+    preview: false | { previewColor: string; previewDash: number[] },
+    { lineWidth = VWC.segmentLineWidth, lineColor = VWC.segmentColor } = {},
   ): void {
     ctx.beginPath();
     ctx.lineWidth = lineWidth;
     if (preview) {
-      ctx.strokeStyle = EDC.previewColor;
-      ctx.setLineDash(EDC.previewDash);
+      ctx.strokeStyle = preview.previewColor;
+      ctx.setLineDash(preview.previewDash);
     } else {
       ctx.strokeStyle = lineColor;
     }
