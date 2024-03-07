@@ -45,25 +45,23 @@ export class GraphEditor {
   }
 
   private addEventListeners(ngZone: NgZone, renderer2: Renderer2) {
-    ngZone.runOutsideAngular(() => {
-      this.eventUnlisteners.push(
-        renderer2.listen(this.canvas, 'mousemove', (ev) => {
-          this.onMouseMove(ev);
-        }),
-      );
+    this.eventUnlisteners.push(
+      renderer2.listen(this.canvas, 'mousemove', (ev) => {
+        this.onMouseMove(ev);
+      }),
+    );
 
-      this.eventUnlisteners.push(
-        renderer2.listen(this.canvas, 'mousedown', (ev) => {
-          this.onMouseDown(ev);
-        }),
-      );
+    this.eventUnlisteners.push(
+      renderer2.listen(this.canvas, 'mousedown', (ev) => {
+        this.onMouseDown(ev);
+      }),
+    );
 
-      this.eventUnlisteners.push(
-        renderer2.listen(this.canvas, 'mouseup', () => {
-          this.onMouseUp();
-        }),
-      );
-    });
+    this.eventUnlisteners.push(
+      renderer2.listen(this.canvas, 'mouseup', () => {
+        this.onMouseUp();
+      }),
+    );
   }
 
   deleteEventListeners() {
@@ -75,7 +73,7 @@ export class GraphEditor {
     this.hovered = getNearestPoint(
       this.mousePos,
       this.graph.points,
-      this.settingsService.hoverThreshold() * this.viewport.zoom,
+      this.settingsService.hoverThreshold() * this.viewport.zoom(),
     );
     if (this.dragging && this.selected) {
       this.selected.x = this.mousePos.x;
@@ -167,7 +165,7 @@ export class GraphEditor {
         hoverDash: this.settingsService.hoverDash(),
       },
       {
-        zoom: this.viewport.zoom,
+        zoom: this.viewport.zoom(),
       },
     );
 
@@ -188,7 +186,7 @@ export class GraphEditor {
         },
         false,
         {
-          zoom: this.viewport.zoom,
+          zoom: this.viewport.zoom(),
         },
       );
     }

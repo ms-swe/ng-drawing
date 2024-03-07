@@ -1,5 +1,6 @@
 import {
   AfterViewInit,
+  ChangeDetectionStrategy,
   Component,
   ElementRef,
   NgZone,
@@ -35,6 +36,7 @@ import { MatInputModule } from '@angular/material/input';
   ],
   templateUrl: './drawing-area.component.html',
   styleUrl: './drawing-area.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DrawingAreaComponent implements OnInit, OnDestroy, AfterViewInit {
   @ViewChild('innerComponent', { static: true }) innerComponent!: ElementRef;
@@ -52,6 +54,8 @@ export class DrawingAreaComponent implements OnInit, OnDestroy, AfterViewInit {
 
   viewport?: Viewport;
 
+  zoom = signal(0);
+
   canvasWidth = signal(400);
   canvasHeight = signal(300);
 
@@ -63,17 +67,17 @@ export class DrawingAreaComponent implements OnInit, OnDestroy, AfterViewInit {
   graphEditor?: GraphEditor;
 
   eventUnlisteners: (() => void)[] = [];
+  resizeObserver?: ResizeObserver;
 
   ngOnInit(): void {
     this.addEventListeners();
   }
 
   ngOnDestroy() {
-    this.deleteEventListeners();
+    this.cleanUpListenersAndObservers();
   }
 
   ngAfterViewInit(): void {
-    // this.onResize();
     this.observeResize();
 
     const canvas = this.canvasElemRef.nativeElement;
@@ -86,6 +90,8 @@ export class DrawingAreaComponent implements OnInit, OnDestroy, AfterViewInit {
       this.renderer2,
     );
 
+    this.zoom = this.viewport.zoom;
+
     this.graph = new Graph();
     this.graphEditor = new GraphEditor(
       this.graph,
@@ -97,16 +103,8 @@ export class DrawingAreaComponent implements OnInit, OnDestroy, AfterViewInit {
 
     this.load();
 
-    this.ngZone.runOutsideAngular(() => {
-      this.animate();
-    });
+    this.animate();
   }
-
-  // @HostListener('window:resize', ['$event'])
-  // onResize(): void {
-  //   this.canvasWidth.set(window.innerWidth - 30);
-  //   this.canvasHeight.set(window.innerHeight - 160);
-  // }
 
   observeResize() {
     // set initial size
@@ -114,7 +112,7 @@ export class DrawingAreaComponent implements OnInit, OnDestroy, AfterViewInit {
     this.canvasHeight.set(window.innerHeight - 165);
 
     // react on changes of the horizontal slider
-    const resizeObserver = new ResizeObserver((entries) => {
+    this.resizeObserver = new ResizeObserver((entries) => {
       for (const entry of entries) {
         if (entry.contentRect) {
           console.log(entry.contentRect.width);
@@ -125,8 +123,7 @@ export class DrawingAreaComponent implements OnInit, OnDestroy, AfterViewInit {
       }
     });
 
-    resizeObserver.observe(this.innerComponent.nativeElement);
-    //TODO need to call unobserve at the end ?
+    this.resizeObserver.observe(this.innerComponent.nativeElement);
   }
 
   animate() {
@@ -136,23 +133,23 @@ export class DrawingAreaComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   private addEventListeners() {
-    this.ngZone.runOutsideAngular(() => {
-      this.eventUnlisteners.push(
-        this.renderer2.listen(
-          this.canvasElemRef.nativeElement,
-          'contextmenu',
-          (ev) => {
-            ev.preventDefault();
-          },
-        ),
-      );
-    });
+    this.eventUnlisteners.push(
+      this.renderer2.listen(
+        this.canvasElemRef.nativeElement,
+        'contextmenu',
+        (ev) => {
+          ev.preventDefault();
+        },
+      ),
+    );
   }
 
-  private deleteEventListeners() {
+  private cleanUpListenersAndObservers() {
     this.eventUnlisteners.forEach((func) => func());
     this.graphEditor?.deleteEventListeners();
     this.viewport?.deleteEventListeners();
+
+    this.resizeObserver?.disconnect();
   }
 
   test() {}
@@ -163,10 +160,6 @@ export class DrawingAreaComponent implements OnInit, OnDestroy, AfterViewInit {
 
   zoomOut() {
     this.viewport?.changeZoom(1, false);
-  }
-
-  zoom() {
-    return this.viewport?.zoom;
   }
 
   dispose() {
