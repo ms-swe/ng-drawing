@@ -2,11 +2,12 @@ import { Component, inject } from '@angular/core';
 import { MatInputModule } from '@angular/material/input';
 import { MatSliderModule } from '@angular/material/slider';
 import { SettingsService } from '../../data/settings.service';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'ngdr-settings',
   standalone: true,
-  imports: [MatInputModule, MatSliderModule],
+  imports: [MatInputModule, MatSliderModule, FormsModule],
   templateUrl: './settings.component.html',
   styleUrl: './settings.component.scss',
 })

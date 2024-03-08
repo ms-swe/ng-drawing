@@ -48,7 +48,6 @@ export class Point {
         0,
         Math.PI * 2,
       );
-      console.log(radius + '/' + selected.selectionDistance); //TODO selectionDistance ist richtig, aber Kreis viel zu groß nach erstmaliger Änderung
 
       ctx.stroke();
     }
@@ -58,7 +57,7 @@ export class Point {
       ctx.lineWidth = hovered.hoverWidth * zoom;
       ctx.strokeStyle = hovered.hoverStrokeStyle;
       ctx.setLineDash(hovered.hoverDash);
-      ctx.arc(this.x, this.y, radius + hovered.hoverDistance, 0, Math.PI * 2); //TODO wie oben
+      ctx.arc(this.x, this.y, radius + hovered.hoverDistance, 0, Math.PI * 2);
       ctx.stroke();
       ctx.setLineDash([]);
     }
