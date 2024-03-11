@@ -1,3 +1,12 @@
+<mat-toolbar class="toolbar">
+  <button mat-icon-button (click)="save()">
+    <mat-icon>save</mat-icon>
+  </button>
+  <button mat-icon-button (click)="reset()">
+    <mat-icon>undo</mat-icon>
+  </button>
+</mat-toolbar>
+
 <fieldset>
   <legend>Canvas</legend>
 
@@ -10,7 +19,10 @@
       matInput
       id="canvasBackgroundColor"
       type="color"
-      [(ngModel)]="canvasBackgroundColor"
+      [value]="settingsStore.canvasBackgroundColor()"
+      (change)="
+        settingsStore.updateCanvasBackgroundColor($any($event.target).value)
+      "
     />
   </div>
 </fieldset>
@@ -25,7 +37,8 @@
         class="setting-input"
         id="zoomStep"
         matSliderThumb
-        [(ngModel)]="zoomStep"
+        [value]="settingsStore.zoom.step()"
+        (valueChange)="settingsStore.updateZoomStep($event)"
       />
     </mat-slider>
   </div>
@@ -37,7 +50,8 @@
         class="setting-input"
         id="zoomMin"
         matSliderThumb
-        [(ngModel)]="zoomMin"
+        [value]="settingsStore.zoom.min()"
+        (valueChange)="settingsStore.updateZoomMin($event)"
       />
     </mat-slider>
   </div>
@@ -49,7 +63,8 @@
         class="setting-input"
         id="zoomMax"
         matSliderThumb
-        [(ngModel)]="zoomMax"
+        [value]="settingsStore.zoom.max()"
+        (valueChange)="settingsStore.updateZoomMax($event)"
       />
     </mat-slider>
   </div>
@@ -65,7 +80,8 @@
         class="setting-input"
         id="selectionWidth"
         matSliderThumb
-        [(ngModel)]="selectionWidth"
+        [value]="settingsStore.selection.width()"
+        (valueChange)="settingsStore.updateSelectionWidth($event)"
       />
     </mat-slider>
   </div>
@@ -79,7 +95,10 @@
       matInput
       id="selectionStrokeStyle"
       type="color"
-      [(ngModel)]="selectionStrokeStyle"
+      [value]="settingsStore.selection.strokeStyle()"
+      (change)="
+        settingsStore.updateSelectionStrokeStyle($any($event.target).value)
+      "
     />
   </div>
 
@@ -92,7 +111,8 @@
         class="setting-input"
         id="selectionDistance"
         matSliderThumb
-        [(ngModel)]="selectionDistance"
+        [value]="settingsStore.selection.distance()"
+        (valueChange)="settingsStore.updateSelectionDistance($event)"
       />
     </mat-slider>
   </div>
@@ -108,7 +128,8 @@
         class="setting-input"
         id="hoverThreshold"
         matSliderThumb
-        [(ngModel)]="hoverThreshold"
+        [value]="settingsStore.hover.threshold()"
+        (valueChange)="settingsStore.updateHoverThreshold($event)"
       />
     </mat-slider>
   </div>
@@ -120,7 +141,8 @@
         class="setting-input"
         id="hoverWidth"
         matSliderThumb
-        [(ngModel)]="hoverWidth"
+        [value]="settingsStore.hover.width()"
+        (valueChange)="settingsStore.updateHoverWidth($event)"
       />
     </mat-slider>
   </div>
@@ -134,7 +156,8 @@
       matInput
       id="hoverStrokeStyle"
       type="color"
-      [(ngModel)]="hoverStrokeStyle"
+      [value]="settingsStore.hover.strokeStyle()"
+      (change)="settingsStore.updateHoverStrokeStyle($any($event.target).value)"
     />
   </div>
 
@@ -145,7 +168,8 @@
         class="setting-input"
         id="hoverDistance"
         matSliderThumb
-        [(ngModel)]="hoverDistance"
+        [value]="settingsStore.hover.distance()"
+        (valueChange)="settingsStore.updateHoverDistance($event)"
       />
     </mat-slider>
   </div>
@@ -160,7 +184,8 @@
       matInput
       id="previewColor"
       type="color"
-      [(ngModel)]="previewColor"
+      [value]="settingsStore.preview.color()"
+      (change)="settingsStore.updatePreviewColor($any($event.target).value)"
     />
   </div>
 </fieldset>

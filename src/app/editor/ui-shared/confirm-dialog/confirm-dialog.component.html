@@ -1,0 +1,16 @@
+<h1 mat-dialog-title>{{ data.dialogTitle }}</h1>
+
+<mat-dialog-content class="mat-typography">
+  <p>{{ data.confirmationMessage }}</p>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-raised-button mat-dialog-close cdkFocusInitial>No</button>
+  <button
+    mat-raised-button
+    [color]="data.confirmationButtonColor"
+    [mat-dialog-close]="true"
+  >
+    {{ data.confirmationButtonText }}
+  </button>
+</mat-dialog-actions>

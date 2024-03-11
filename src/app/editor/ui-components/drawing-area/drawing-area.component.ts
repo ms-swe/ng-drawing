@@ -21,8 +21,8 @@ import { Router } from '@angular/router';
 import { Viewport } from '../../viewport';
 import { MatDialog } from '@angular/material/dialog';
 import { DeleteDialogComponent } from '../../ui-shared/delete-dialog/delete-dialog.component';
-import { SettingsService } from '../../data/settings.service';
 import { MatInputModule } from '@angular/material/input';
+import { SettingsStore } from '../../data/settings-store';
 
 @Component({
   selector: 'ngdr-drawing-area',
@@ -59,9 +59,7 @@ export class DrawingAreaComponent implements OnInit, OnDestroy, AfterViewInit {
   canvasWidth = signal(400);
   canvasHeight = signal(300);
 
-  settingsService = inject(SettingsService);
-
-  canvasBackgroundColor = this.settingsService.canvasBackgroundColor;
+  settingsStore = inject(SettingsStore);
 
   graph?: Graph;
   graphEditor?: GraphEditor;
@@ -85,7 +83,7 @@ export class DrawingAreaComponent implements OnInit, OnDestroy, AfterViewInit {
 
     this.viewport = new Viewport(
       canvas,
-      this.settingsService,
+      this.settingsStore.zoom,
       this.ngZone,
       this.renderer2,
     );
@@ -96,7 +94,9 @@ export class DrawingAreaComponent implements OnInit, OnDestroy, AfterViewInit {
     this.graphEditor = new GraphEditor(
       this.graph,
       this.viewport,
-      this.settingsService,
+      this.settingsStore.selection,
+      this.settingsStore.hover,
+      this.settingsStore.preview,
       this.ngZone,
       this.renderer2,
     );
@@ -115,8 +115,6 @@ export class DrawingAreaComponent implements OnInit, OnDestroy, AfterViewInit {
     this.resizeObserver = new ResizeObserver((entries) => {
       for (const entry of entries) {
         if (entry.contentRect) {
-          console.log(entry.contentRect.width);
-          console.log(entry.contentRect.height);
           this.canvasWidth.set(entry.contentRect.width - 10);
           this.canvasHeight.set(window.innerHeight - 165);
         }

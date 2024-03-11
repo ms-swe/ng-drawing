@@ -1,8 +1,8 @@
-import { NgZone, Renderer2, signal } from '@angular/core';
+import { NgZone, Renderer2, Signal, signal } from '@angular/core';
 import * as EDC from './data/constants';
 import { Point } from './virtual-world/primitives/point';
 import { add, scale, subtract } from './virtual-world/math/utils';
-import { SettingsService } from './data/settings.service';
+import { SettingsState } from './data/settings-store';
 
 type DragInfo = {
   start: Point;
@@ -15,7 +15,7 @@ export class Viewport {
   canvas: HTMLCanvasElement;
   ctx: CanvasRenderingContext2D;
 
-  settingsService: SettingsService;
+  zoomSettings: Signal<SettingsState['zoom']>;
 
   zoom = signal(1);
   mousePosRaw = new Point(0, 0);
@@ -31,12 +31,12 @@ export class Viewport {
 
   constructor(
     canvas: HTMLCanvasElement,
-    settingsService: SettingsService,
+    zoomSettings: Signal<SettingsState['zoom']>,
     ngZone: NgZone,
     renderer2: Renderer2,
   ) {
     this.canvas = canvas;
-    this.settingsService = settingsService;
+    this.zoomSettings = zoomSettings;
     this.ctx = canvas.getContext('2d')!;
     this.offset = new Point(0, 0);
 
@@ -124,10 +124,10 @@ export class Viewport {
   }
 
   changeZoom(direction: number, considerMousePos: boolean) {
-    let newZoom = this.zoom() + direction * this.settingsService.zoomStep();
+    let newZoom = this.zoom() + direction * this.zoomSettings().step;
     newZoom = Math.max(
-      this.settingsService.zoomMin(),
-      Math.min(this.settingsService.zoomMax(), newZoom),
+      this.zoomSettings().min,
+      Math.min(this.zoomSettings().max, newZoom),
     );
 
     if (considerMousePos) {
